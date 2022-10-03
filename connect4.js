@@ -4,15 +4,20 @@
  * column until a player gets four-in-a-row (horiz, vert, or diag) or until
  * board fills (tie)
  */
+ 
+  
+  
 class Game{
-  constructor (width=7, height=6){
+  constructor (player1,player2, width=7, height=6){
+    this.players=[player1, player2];
     this.width = width;
     this.height = height;
-    this.currPlayer = 1;
+    this.currPlayer = player1;
     this.board = []; // array of rows, each row is array of cells  (board[y][x])
     this.makeBoard();
+    //this.handleGameClick = this.handleClick.bind(this);
     this.makeHtmlBoard();
-  
+    
   }
   /** makeBoard: create in-JS board structure:
  *   board = array of rows, each row is array of cells  (board[y][x])
@@ -28,9 +33,8 @@ class Game{
   const top = document.createElement('tr');
   top.setAttribute('id', 'column-top');
   
-    this.handleGameClick = this.handleClick.bind(this);
-
-  top.addEventListener('click', this.handleGameClick);
+  this.handleGameClick = this.handleClick.bind(this);
+  top.addEventListener("click", this.handleGameClick)
 
   for (let x = 0; x < this.width; x++) {
     const headCell = document.createElement('td');
@@ -68,7 +72,9 @@ findSpotForCol(x) {
 placeInTable(y, x) {
   const piece = document.createElement('div');
   piece.classList.add('piece');
-  piece.classList.add(`p${this.currPlayer}`);
+  //piece.classList.add(`p${this.currPlayer}`);
+  //update and add style to HTML associated to the color entered for Player1 or Player 2
+  piece.style.backgroundColor= this.currPlayer.color
   piece.style.top = -50 * (y + 2);
 
   const spot = document.getElementById(`${y}-${x}`);
@@ -97,7 +103,7 @@ handleClick(evt) {
   
   // check for win
   if (this.checkForWin()) {
-    return this.endGame(`Player ${this.currPlayer} won!`);
+    return this.endGame(`Player ${this.currPlayer.color} won!`);
   }
   
   // check for tie
@@ -105,8 +111,8 @@ handleClick(evt) {
     return this.endGame('Tie!');
   }
     
-  // switch players
-  this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+  // switch players players
+  this.currPlayer = this.currPlayer === this.players[0] ? this.players[1] : this.players[0];
 }
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -143,5 +149,16 @@ checkForWin() {
   }
 }
 }
+class Player{
+  constructor(color){
+    this.color = color;
+  }
+}
+document.getElementById('start-game').addEventListener('click', () => {
+  let player1 = new Player(document.getElementById('player1').value);
+  let player2 = new Player(document.getElementById('player2').value);
+  document.getElementById('start-game').innerText = "New Game";
+  document.getElementById('board').innerHTML = '';
+  new Game(player1,player2,6,7)
+});
 
-new Game(6, 7); 
