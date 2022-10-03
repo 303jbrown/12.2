@@ -12,7 +12,7 @@ class Game{
     this.board = []; // array of rows, each row is array of cells  (board[y][x])
     this.makeBoard();
     this.makeHtmlBoard();
-   // this.handleGameClick = this.handleClick.bind(this);
+    this.handleGameClick = this.handleClick.bind(this);
   }
   /** makeBoard: create in-JS board structure:
  *   board = array of rows, each row is array of cells  (board[y][x])
@@ -30,7 +30,7 @@ class Game{
   
   
 
-  top.addEventListener('click', evt => this.handleClick);
+  top.addEventListener('click', this.handleGameClick);
 
   for (let x = 0; x < this.width; x++) {
     const headCell = document.createElement('td');
@@ -92,12 +92,12 @@ handleClick(evt) {
   }
 
   // place piece in board and add to HTML table
-  this.board[y][x] = currPlayer;
+  this.board[y][x] = this.currPlayer;
   this.placeInTable(y, x);
   
   // check for win
   if (this.checkForWin()) {
-    return this.endGame(`Player ${currPlayer} won!`);
+    return this.endGame(`Player ${this.currPlayer} won!`);
   }
   
   // check for tie
